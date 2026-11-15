@@ -145,6 +145,9 @@ nav[data-open=true]{display:grid}nav a{padding:8px 0}
 .news-feature .section h2{font-size:clamp(31px,3.8vw,45px)}
 .privacy-notice{border:1px solid var(--line);border-radius:4px;padding:10px 13px;margin-top:16px;background:#eff1e8}
 .privacy-notice summary{cursor:pointer;font-weight:700;color:var(--green)}
+.privacy-scroll{max-height:min(42vh,16rem);overflow-y:auto;margin-top:10px;padding:0 10px 10px 0;scrollbar-gutter:stable;border-top:1px solid var(--line)}
+.privacy-progress{margin:8px 0 0;color:var(--muted);font-size:13px}
+.button:disabled{cursor:not-allowed;background:#e1e5da;color:#505d52}
 .privacy-notice dl{margin:9px 0 4px;font-size:13px;line-height:1.6;color:var(--muted)}
 .privacy-notice dt{font-weight:700;margin-top:7px;color:var(--ink)}
 .privacy-notice dd{margin:0}

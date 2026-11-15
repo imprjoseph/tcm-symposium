@@ -13,6 +13,7 @@ const status = byId("registration-status");
 const submit = form.querySelector('[type="submit"]');
 const fields = form.elements;
 let mode = "closed";
+let submitting = false;
 
 function setStatus(message, error = false) {
   status.textContent = message;
@@ -121,6 +122,40 @@ const privacyItems = [
 ];
 for (const [label, description] of privacyItems) byId("privacy-copy").append(make("dt", label), make("dd", description));
 byId("notice-version").value = notice.version;
+const privacy = byId("privacy");
+const privacyScroll = byId("privacy-scroll");
+const privacyProgress = byId("privacy-progress");
+const consent = fields.consent;
+const privacyInstruction = privacyProgress.textContent;
+let noticeRead = false;
+
+function updateRegistrationControls() {
+  consent.disabled = !noticeRead || mode === "closed";
+  submit.disabled = consent.disabled || !consent.checked || submitting;
+}
+
+function checkPrivacyScroll() {
+  if (noticeRead || !privacy.open || !privacyScroll.clientHeight) return;
+  if (privacyScroll.scrollTop + privacyScroll.clientHeight < privacyScroll.scrollHeight - 2) return;
+  noticeRead = true;
+  privacyProgress.textContent = "已到告知事項底部，可以勾選同意。";
+  updateRegistrationControls();
+}
+
+function resetRegistration() {
+  form.reset();
+  noticeRead = false;
+  privacyScroll.scrollTop = 0;
+  privacy.open = false;
+  privacyProgress.textContent = privacyInstruction;
+  updateRegistrationControls();
+}
+
+privacy.addEventListener("toggle", checkPrivacyScroll);
+privacyScroll.addEventListener("scroll", checkPrivacyScroll, { passive: true });
+window.addEventListener("resize", checkPrivacyScroll);
+consent.addEventListener("change", updateRegistrationControls);
+
 new IntersectionObserver(([entry]) => {
   byId("floating-register").hidden = entry.isIntersecting;
 }, { threshold: 0.08 }).observe(byId("register"));
@@ -130,10 +165,8 @@ fillDemo.onclick = () => {
   fields.name.value = "測試與會者";
   fields.email.value = "attendee@example.invalid";
   fields.organization.value = "研討會測試";
-  fields.consent.checked = true;
 };
 
-submit.disabled = true;
 function setMode(data) {
   mode = data.mode;
   byId("mode-note").textContent = {
@@ -142,7 +175,7 @@ function setMode(data) {
     closed: "正式報名尚未開放。"
   }[mode];
   fillDemo.hidden = mode !== "demo";
-  submit.disabled = mode === "closed";
+  updateRegistrationControls();
   byId("line-section").hidden = !data.lineEnabled;
 }
 if (githubPages) {
@@ -159,16 +192,18 @@ if (githubPages) {
 }
 
 form.onsubmit = async (e) => {
-  if (githubPages && mode === "live" && !submit.disabled) return;
+  const canSubmit = mode !== "closed" && noticeRead && consent.checked && !submitting;
+  if (canSubmit && githubPages && mode === "live") return;
   e.preventDefault();
-  if (mode === "closed" || submit.disabled) return;
+  if (!canSubmit) return;
   const data = Object.fromEntries(new FormData(form));
-  data.consent = fields.consent.checked;
+  data.consent = consent.checked;
   if (mode === "demo" && data.email.toLowerCase() !== "attendee@example.invalid") {
     setStatus("預覽只接受測試資料，請先點「填入測試資料」。", true);
     return;
   }
-  submit.disabled = true;
+  submitting = true;
+  updateRegistrationControls();
   setStatus(mode === "demo" ? "正在建立預覽票券…" : "正在處理報名與確認信…");
   try {
     let result;
@@ -190,18 +225,19 @@ form.onsubmit = async (e) => {
       setStatus("");
     } else {
       setStatus(result.message);
-      if (result.emailSent) form.reset();
+      if (result.emailSent) resetRegistration();
     }
   } catch (error) {
     setStatus(error.message || "連線中斷，請稍後重試。", true);
   } finally {
-    submit.disabled = false;
+    submitting = false;
+    updateRegistrationControls();
   }
 };
 
 byId("register-again").onclick = () => {
   byId("ticket").hidden = true;
   form.hidden = false;
-  form.reset();
+  resetRegistration();
   fields.name.focus();
 };

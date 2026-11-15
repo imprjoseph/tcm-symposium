@@ -6,8 +6,8 @@
   <meta name="description" content="中醫醫學研討會。查詢會議議程、講師與交通資訊，完成線上報名及現場 QR Code 報到。">
   <meta name="theme-color" content="#142d27">
   <title>中醫醫學研討會</title>
-  <link rel="stylesheet" href="./style.css?v=venue">
-  <script src="./app.js?v=venue" type="module"></script>
+  <link rel="stylesheet" href="./style.css?v=privacy-scroll">
+  <script src="./app.js?v=privacy-scroll" type="module"></script>
 </head>
 <body>
   <a class="skip" href="#main">跳至主要內容</a>
@@ -74,12 +74,15 @@
             <label>電子郵件 <span class="required">*</span><input name="email" type="email" autocomplete="email" placeholder="name@example.com" required maxlength="120"></label>
             <label>服務單位 <span class="optional">選填</span><input name="organization" autocomplete="organization" placeholder="診所、醫院或機構名稱" maxlength="100"></label>
             <div class="trap" aria-hidden="true"><label>請留空<input name="website" tabindex="-1" autocomplete="off"></label></div>
-            <details class="privacy-notice" id="privacy" open>
-              <summary>個人資料蒐集告知事項</summary>
-              <dl id="privacy-copy"></dl>
-              <p class="form-note" id="privacy-draft">此為預覽文案。正式保存期限、資料處理地區及聯絡方式由主辦單位確認後公布。</p>
+            <details class="privacy-notice" id="privacy">
+              <summary id="privacy-heading">個人資料蒐集告知事項</summary>
+              <div id="privacy-scroll" class="privacy-scroll" role="region" aria-labelledby="privacy-heading" tabindex="0">
+                <dl id="privacy-copy"></dl>
+                <p class="form-note" id="privacy-draft">此為預覽文案。正式保存期限、資料處理地區及聯絡方式由主辦單位確認後公布。</p>
+              </div>
             </details>
-            <label class="consent"><input type="checkbox" name="consent" value="yes" required><span>我已閱讀個資告知事項，並同意依上述目的使用我的報名資料。</span></label>
+            <p class="form-note privacy-progress" id="privacy-progress" role="status">請先點開個資告知，捲動到內容底部。</p>
+            <label class="consent"><input type="checkbox" name="consent" value="yes" aria-describedby="privacy-progress" required disabled><span>我已閱讀個資告知事項，並同意依上述目的使用我的報名資料。</span></label>
             <div class="form-actions"><button class="button button-dark" type="submit" disabled>送出報名 <span aria-hidden="true">↗</span></button><button class="text-button" type="button" id="fill-demo" hidden>填入測試資料</button></div>
           </form>
           <p id="registration-status" class="status" role="status" aria-live="polite"></p>
