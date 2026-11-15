@@ -61,10 +61,6 @@
       <div class="filters" aria-label="篩選議程"><button type="button" data-filter="all" aria-pressed="true">全日</button><button type="button" data-filter="am" aria-pressed="false">上午</button><button type="button" data-filter="pm" aria-pressed="false">下午</button></div>
       <div id="agenda-list"></div>
     </section>
-    <section class="wrap section venue" id="venue">
-      <div><p class="eyebrow">交通資訊</p><h2>如何抵達</h2><p id="venue-address" class="body-copy">正式會場與交通資訊待公告。</p><a id="directions" class="button button-light" href="#venue" target="_blank" rel="noopener noreferrer" hidden>開啟 Google 地圖 <span aria-hidden="true">↗</span></a></div>
-      <div class="map-card" id="map-card"><div id="map-placeholder"><span class="map-pin" aria-hidden="true">◎</span><strong id="map-title">會場待公告</strong><p id="map-note">地址確認後，即可在此查詢地圖與路線。</p><button id="load-map" class="button button-light" type="button" hidden>載入地圖</button></div></div>
-    </section>
     <section class="registration" id="register">
       <div class="wrap section register-grid">
         <div><p class="eyebrow">線上報名</p><h2>報名出席</h2><p>報名後請留意確認信。活動當天出示信中的個人 QR Code，由工作人員掃碼完成報到。</p><ol class="steps"><li>填寫報名資料</li><li>查看 Email 確認信</li><li>於現場出示 QR Code</li></ol></div>
@@ -99,6 +95,10 @@
     </section>
     <section id="line-section" class="wrap line-bar" hidden>
       <div><h3>LINE 會議通知</h3><p>已報名者可依確認信中的邀請資訊加入 LINE 群組。</p></div>
+    </section>
+    <section class="wrap section venue" id="venue">
+      <div><p class="eyebrow">交通資訊</p><h2>如何抵達</h2><p id="venue-address" class="body-copy">正式會場與交通資訊待公告。</p><a id="directions" class="button button-light" href="#venue" target="_blank" rel="noopener noreferrer" hidden>開啟 Google 地圖 <span aria-hidden="true">↗</span></a></div>
+      <div class="map-card" id="map-card"><div id="map-placeholder"><span class="map-pin" aria-hidden="true">◎</span><strong id="map-title">會場待公告</strong><p id="map-note">地址確認後，即可在此查詢地圖與路線。</p><button id="load-map" class="button button-light" type="button" hidden>載入地圖</button></div></div>
     </section>
   </main>
   <a id="floating-register" class="button button-primary floating-register" href="#register">
