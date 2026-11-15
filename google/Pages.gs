@@ -60,17 +60,17 @@ function checkInFromPages_(properties, form) {
 
 function pagesResult_(action, result, config) {
   const checkIn = action === 'check-in';
+  // Keep public responses from disclosing whether an email is in the roster.
+  const submissionHandled = !checkIn && ['sent', 'duplicate', 'mail_failed', 'full'].includes(result.status);
+  const status = submissionHandled ? 'submitted' : result.status;
   let copy = {
-    sent: ['報名已完成', '確認信已寄出。請查收收件匣與垃圾郵件匣，並於現場出示信中的 QR Code。'],
-    duplicate: ['請查看先前的確認信', '若此信箱已完成報名，請查收先前的確認信，或聯絡主辦單位。'],
-    mail_failed: ['已收到報名資料', '確認信尚未寄出。請稍後以相同電子郵件重新送出，或聯絡主辦單位。'],
-    full: ['報名名額已滿', '可回到會議網站查看最新消息。'],
+    submitted: ['已處理報名請求', '報名以收到確認信為準。請查看收件匣與垃圾郵件匣。若未收到，可在確認信箱正確後重試，或聯絡主辦單位。'],
     closed: ['目前尚未開放', '請以會議網站公告為準。'],
     notice: ['請重新閱讀個資告知', '告知事項版本可能已更新。請回到網站重新整理，再填寫報名。'],
     denied: ['通行碼有誤', '請確認工作人員通行碼。'],
     missing: ['找不到票券', '請確認使用本次研討會確認信中的報到憑證。'],
     invalid: ['資料格式有誤', '請返回表單檢查後再試。']
-  }[result.status] || ['暫時無法處理', '請稍後重試。如已填寫報名，請使用相同的電子郵件。'];
+  }[status] || ['暫時無法處理', '請稍後重試。如已填寫報名，請使用相同的電子郵件。'];
   if (result.status === 'checked_in') copy = ['報到完成', result.name + ' 已完成報到。'];
   if (result.status === 'already') copy = ['此票券已報到', result.name + ' 已於 ' + result.time + ' 報到。'];
   const link = config ? config.url + (checkIn ? 'check-in.html' : '#register') : '';

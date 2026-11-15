@@ -114,7 +114,11 @@ test("Google registration and mail retry preserve one roster row and allow one c
   assert.equal(postForm({ ...newForm, noticeVersion: "old" }).title, "請重新閱讀個資告知");
   assert.equal(postForm({ ...newForm, consent: "" }).title, "請重新閱讀個資告知");
   assert.equal(rows.length, 2);
-  assert.equal(postForm(newForm).title, "報名已完成");
+  const accepted = postForm(newForm);
+  assert.equal(accepted.title, "已處理報名請求");
+  assert.equal(postForm(newForm).html, accepted.html);
+  assert.equal(postForm({ ...newForm, email: "capacity@example.invalid" }).html, accepted.html);
+  assert.doesNotMatch(accepted.html, /pages@example\.invalid|表單測試/);
   assert.equal(rows[2][8], "v1");
   assert.equal(sent.length, 2);
   assert.equal(sent[1].attachments[0].bytes.subarray(0, 6).toString(), "GIF87a");
