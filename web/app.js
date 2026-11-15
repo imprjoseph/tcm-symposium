@@ -1,4 +1,4 @@
-import { event, googleWebApp, hasPrivacyNotice } from "./event.js?v=forum-2027";
+import { event, googleWebApp, hasPrivacyNotice, sampleSpeakers } from "./event.js?v=speaker-profiles";
 import { githubPages } from "./site-mode.js";
 
 const byId = (id) => document.getElementById(id);
@@ -73,20 +73,44 @@ if (event.venue.name && event.venue.address) {
 }
 
 const speakerList = byId("speaker-list");
-speakerList.hidden = !event.speakers.length;
-byId("speaker-note").hidden = event.speakers.length > 0;
-for (const speaker of event.speakers) {
+const showSamples = !event.published && !event.speakers.length;
+const speakers = showSamples ? sampleSpeakers : event.speakers;
+const speakerNote = byId("speaker-note");
+speakerList.hidden = !speakers.length;
+speakerNote.hidden = !showSamples && speakers.length > 0;
+if (showSamples) speakerNote.textContent = "以下為虛構講師樣本，姓名、單位與照片皆為示意。正式名單待公告。";
+for (const speaker of speakers) {
   const card = make("article", "", "speaker");
   const portrait = make("div", speaker.photo ? "" : speaker.mark, "portrait");
   if (speaker.photo) {
     const img = make("img");
     img.src = speaker.photo;
-    img.alt = speaker.name;
+    img.alt = "";
+    img.width = 464;
+    img.height = 464;
     img.loading = "lazy";
     portrait.append(img);
   } else portrait.setAttribute("aria-hidden", "true");
   const body = make("div", "", "speaker-text");
-  body.append(make("h3", speaker.name), make("p", speaker.bio));
+  body.append(make("h3", speaker.name));
+  if (speaker.title) body.append(make("p", speaker.title, "speaker-title"));
+  if (speaker.organization) body.append(make("p", speaker.organization));
+  if (speaker.specialty) {
+    const specialty = make("p", "", "speaker-specialty");
+    specialty.append(make("strong", "專長"), document.createTextNode("　" + speaker.specialty));
+    body.append(specialty);
+  }
+  const profile = make("dl", "", "speaker-profile");
+  for (const [label, content] of [["個人簡介", speaker.bio], ["相關經歷", speaker.experience], ["演講主題", speaker.topic]]) {
+    if (content) profile.append(make("dt", label), make("dd", content));
+  }
+  if (profile.childElementCount) {
+    const details = make("details", "", "speaker-details");
+    const summary = make("summary", "詳細介紹");
+    summary.setAttribute("aria-label", speaker.name + "的詳細介紹");
+    details.append(summary, profile);
+    body.append(details);
+  }
   card.append(portrait, body);
   speakerList.append(card);
 }
@@ -125,12 +149,12 @@ for (const [index, announcement] of event.news.entries()) {
 const notice = event.privacy;
 const privacyItems = [
   ["蒐集單位", event.organizer || "主辦單位待公告"],
-  ["蒐集目的", "辦理本次研討會報名、確認信與會議通知、名額管理及現場報到。"],
-  ["個人資料類別", "姓名、電子郵件、服務單位（選填），以及系統產生的票券與報到紀錄。"],
+  ["蒐集目的", "辦理本次研討會報名、確認信與會議通知、名額管理及現場報到。選填的 LINE ID 僅供必要的會務聯繫。"],
+  ["個人資料類別", "姓名、電子郵件、服務單位與 LINE ID（後兩項選填），以及系統產生的票券與報到紀錄。"],
   ["利用期間及地區", [notice.retention || "保存期限待主辦單位確認", notice.region || "資料處理地區待主辦單位確認"].join("。") + "。"],
   ["利用對象及方式", "由主辦單位及受託執行報名的工作人員處理。透過 Google 試算表管理名冊、以電子郵件確認報名，並於會場驗證 QR Code。"],
   ["當事人權利與行使方式", "可聯絡 " + (notice.contact || "主辦單位聯絡窗口（待公告）") + "，依個資法請求查詢或閱覽、製給複製本、補充或更正、停止蒐集處理或利用，或刪除。"],
-  ["不提供資料的影響", "姓名或電子郵件未提供時，無法完成線上報名及收取確認信。服務單位可自由選填。"]
+  ["不提供資料的影響", "姓名或電子郵件未提供時，無法完成線上報名及收取確認信。服務單位及 LINE ID 留空均可完成報名。"]
 ];
 for (const [label, description] of privacyItems) byId("privacy-copy").append(make("dt", label), make("dd", description));
 byId("notice-version").value = notice.version;
@@ -177,6 +201,7 @@ fillDemo.onclick = () => {
   fields.name.value = "測試與會者";
   fields.email.value = "attendee@example.invalid";
   fields.organization.value = "研討會測試";
+  fields.lineId.value = "tcm-demo";
 };
 
 function setMode(data) {
@@ -214,6 +239,7 @@ form.onsubmit = async (e) => {
     setStatus("預覽只接受測試資料，請先點「填入測試資料」。", true);
     return;
   }
+  if (mode === "demo") delete data.lineId;
   submitting = true;
   updateRegistrationControls();
   setStatus(mode === "demo" ? "正在建立預覽票券…" : "正在處理報名與確認信…");

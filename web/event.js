@@ -36,5 +36,32 @@ export const event = {
   ]
 };
 
+export const sampleSpeakers = [
+  {
+    name: "林芷衡", title: "中醫內科主治醫師", organization: "松庭中醫門診部",
+    specialty: "中醫內科、脾胃調理、臨床辨證",
+    photo: "./speaker-sample-1.jpg",
+    bio: "以慢性消化道不適的門診照護為主，著重辨證、療程追蹤與生活調整。",
+    experience: "參與中醫內科住院醫師教學，帶領門診病例討論。",
+    topic: "從主訴到追蹤：慢性消化不適的中醫辨證實務"
+  },
+  {
+    name: "陳柏岳", title: "副教授", organization: "青禾中醫藥研究所",
+    specialty: "中藥臨床研究、實證醫學、研究設計",
+    photo: "./speaker-sample-2.jpg",
+    bio: "以臨床療效與安全性評估為研究重點，協助醫療團隊把診間問題轉化為可檢驗的研究假設。",
+    experience: "開設臨床研究方法與文獻評讀課程，參與跨院觀察性研究。",
+    topic: "把門診問題變成研究題目：中藥實證的研究設計"
+  },
+  {
+    name: "許宛寧", title: "中醫針灸科主治醫師", organization: "沐川整合照護中心",
+    specialty: "針灸、疼痛管理、跨科整合照護",
+    photo: "./speaker-sample-3.jpg",
+    bio: "門診聚焦肌肉骨骼疼痛，與復健及護理團隊共同設定照護目標並追蹤功能變化。",
+    experience: "參與跨科疼痛照護討論，協作建立轉介與回診追蹤流程。",
+    topic: "疼痛照護中的針灸介入與跨專業協作"
+  }
+];
+
 export const hasPrivacyNotice = Boolean(event.organizer && event.privacy?.version && event.privacy?.retention && event.privacy?.region && event.privacy?.contact);
 export const googleWebApp = /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(event.appsScriptUrl || "") ? event.appsScriptUrl : "";

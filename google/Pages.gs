@@ -35,7 +35,8 @@ function registerFromPages_(properties, config, form) {
   const attendee = {
     name: String(form.name || '').trim(),
     email: String(form.email || '').trim().toLowerCase(),
-    organization: String(form.organization || '').trim()
+    organization: String(form.organization || '').trim(),
+    lineId: String(form.lineId || '').trim()
   };
   if (form.website || !attendee.name || attendee.name.length > 60 ||
       attendee.email.length > 120 || !/^[a-z0-9][a-z0-9._+'%-]*@[a-z0-9-]+(?:\.[a-z0-9-]+)+$/i.test(attendee.email) ||

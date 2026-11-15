@@ -7,6 +7,9 @@ import checkApp from "../web/check-in.js?raw";
 import siteMode from "../web/site-mode.js?raw";
 import eventSource from "../web/event.js?raw";
 import hero from "../assets/herbal-pharmacy.jpg";
+import speakerOne from "../assets/speaker-sample-1.jpg";
+import speakerTwo from "../assets/speaker-sample-2.jpg";
+import speakerThree from "../assets/speaker-sample-3.jpg";
 import scanner from "../node_modules/html5-qrcode/html5-qrcode.min.js?raw";
 import { event, hasPrivacyNotice } from "../web/event.js";
 
@@ -24,7 +27,10 @@ const assets = {
   "/site-mode.js": [siteMode, "text/javascript; charset=utf-8"],
   "/event.js": [eventSource, "text/javascript; charset=utf-8"],
   "/scanner.js": [scanner, "text/javascript; charset=utf-8"],
-  "/hero.jpg": [hero, "image/jpeg"]
+  "/hero.jpg": [hero, "image/jpeg"],
+  "/speaker-sample-1.jpg": [speakerOne, "image/jpeg"],
+  "/speaker-sample-2.jpg": [speakerTwo, "image/jpeg"],
+  "/speaker-sample-3.jpg": [speakerThree, "image/jpeg"]
 };
 const securityHeaders = {
   "x-content-type-options": "nosniff",
@@ -89,8 +95,10 @@ function readAttendee(data) {
   const name = clean(data.name);
   const email = clean(data.email).toLowerCase();
   const organization = clean(data.organization);
+  const lineId = clean(data.lineId);
   if (data.website || data.consent !== true || !name || name.length > 60 || email.length > 120 || !mailPattern.test(email) || organization.length > 100) return null;
-  return { name, email, organization };
+  if (lineId.length > 40 || /[\r\n\t]/.test(lineId)) return null;
+  return { name, email, organization, lineId };
 }
 
 function settings(env) {

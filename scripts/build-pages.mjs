@@ -7,8 +7,10 @@ const google = "dist/google";
 await Promise.all([mkdir(pages, { recursive: true }), mkdir(google, { recursive: true })]);
 
 const siteFiles = ["index.html", "check-in.html", "app.js", "check-in.js", "style.css", "event.js"];
+const portraits = ["speaker-sample-1.jpg", "speaker-sample-2.jpg", "speaker-sample-3.jpg"];
 await Promise.all([
   ...siteFiles.map((name) => copyFile("web/" + name, pages + "/" + name)),
+  ...portraits.map((name) => copyFile("assets/" + name, pages + "/" + name)),
   copyFile("assets/herbal-pharmacy.jpg", pages + "/hero.jpg"),
   copyFile("node_modules/html5-qrcode/html5-qrcode.min.js", pages + "/scanner.js"),
   copyFile("google/Code.gs", google + "/Code.gs"),
