@@ -10,6 +10,7 @@ import hero from "../assets/herbal-pharmacy.jpg";
 import speakerOne from "../assets/speaker-sample-1.jpg";
 import speakerTwo from "../assets/speaker-sample-2.jpg";
 import speakerThree from "../assets/speaker-sample-3.jpg";
+import speakerFour from "../assets/speaker-sample-4.jpg";
 import scanner from "../node_modules/html5-qrcode/html5-qrcode.min.js?raw";
 import { event, hasPrivacyNotice } from "../web/event.js";
 
@@ -30,7 +31,8 @@ const assets = {
   "/hero.jpg": [hero, "image/jpeg"],
   "/speaker-sample-1.jpg": [speakerOne, "image/jpeg"],
   "/speaker-sample-2.jpg": [speakerTwo, "image/jpeg"],
-  "/speaker-sample-3.jpg": [speakerThree, "image/jpeg"]
+  "/speaker-sample-3.jpg": [speakerThree, "image/jpeg"],
+  "/speaker-sample-4.jpg": [speakerFour, "image/jpeg"]
 };
 const securityHeaders = {
   "x-content-type-options": "nosniff",

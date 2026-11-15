@@ -30,7 +30,7 @@ test("private-review version accepts only demo data and supplies a real GIF QR t
   assert.equal((await send("/api/check-in", { code, staff: env.PREVIEW_STAFF_CODE }, site, env)).status, 200);
   assert.equal((await send("/api/check-in", { code: "invalid", staff: env.PREVIEW_STAFF_CODE }, site, env)).status, 404);
   assert.equal((await worker.fetch(new Request(site + "/hero.jpg"))).headers.get("content-type"), "image/jpeg");
-  for (const index of [1, 2, 3]) {
+  for (const index of [1, 2, 3, 4]) {
     assert.equal((await worker.fetch(new Request(site + "/speaker-sample-" + index + ".jpg"))).headers.get("content-type"), "image/jpeg");
   }
 });

@@ -1,4 +1,4 @@
-import { event, googleWebApp, hasPrivacyNotice, sampleSpeakers } from "./event.js?v=speaker-profiles";
+import { event, googleWebApp, hasPrivacyNotice, sampleSpeakers } from "./event.js?v=four-speakers";
 import { githubPages } from "./site-mode.js";
 
 const byId = (id) => document.getElementById(id);
