@@ -5,7 +5,12 @@ export const event = {
   organizer: "",
   contactEmail: "",
   date: "",
-  venue: { name: "", address: "", transit: "", embedUrl: "" },
+  venue: {
+    name: "臺大醫院國際會議中心",
+    address: "臺北市中正區徐州路 2 號",
+    transit: "搭捷運可從臺大醫院站 2 號出口或善導寺站 2 號出口步行前往。",
+    embedUrl: "https://www.google.com/maps/embed?pb=%211m14%211m8%211m3%211d7229.566193786378%212d121.519522%213d25.041434%213m2%211i1024%212i768%214f13.1%213m3%211m2%211s0x3442a976b82a6343%3A0xebdefa61d17726a4%212z5b6Q5bee6LevMuiZn-W6reWckuacg-mkqA%215e0%213m2%211szh-TW%212sus%214v1725946650179%215m2%211szh-TW%212sus"
+  },
   appsScriptUrl: "",
   registrationOpen: false,
   checkInOpen: false,
@@ -29,7 +34,7 @@ export const event = {
     { period: "pm", time: "15:00–16:10", title: "臨床案例討論與交流", detail: "由與會講師回應案例提問。", type: "綜合討論" }
   ],
   news: [
-    { date: "", label: "籌備中", title: "正式會議資訊將於本頁公告", detail: "目前為網站預覽。正式日期、會場、講師名單與報名資訊將在主辦單位核定後公布。" },
+    { date: "", label: "籌備中", title: "正式會議資訊將於本頁公告", detail: "會場為臺大醫院國際會議中心，地圖與交通方式見頁面下方。正式日期、講師名單與報名資訊將於本頁公告。" },
     { date: "", label: "流程預覽", title: "活動當天使用 QR Code 報到", detail: "完成正式報名後，系統會寄送含個人 QR Code 的確認信。報到時請出示信件或事先截圖。" }
   ]
 };

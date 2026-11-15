@@ -1,4 +1,4 @@
-import { event, googleWebApp, hasPrivacyNotice } from "./event.js";
+import { event, googleWebApp, hasPrivacyNotice } from "./event.js?v=venue";
 import { githubPages } from "./site-mode.js";
 
 const byId = (id) => document.getElementById(id);
@@ -34,14 +34,20 @@ nav.addEventListener("click", (e) => {
 
 if (event.published) {
   byId("event-date").textContent = event.date;
-  byId("venue-short").textContent = event.venue.name;
   byId("speaker-note").hidden = true;
   byId("agenda-note").hidden = true;
   byId("footer-caption").textContent = event.organizer;
   byId("privacy-draft").hidden = hasPrivacyNotice;
-  byId("venue-address").textContent = [event.venue.name, event.venue.address, event.venue.transit].filter(Boolean).join("・");
+}
+
+if (event.venue.name && event.venue.address) {
+  byId("venue-short").textContent = event.venue.name;
+  byId("venue-address").textContent = event.venue.address;
+  const transit = byId("venue-transit");
+  transit.textContent = event.venue.transit;
+  transit.hidden = !event.venue.transit;
   const directions = byId("directions");
-  directions.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(event.venue.address);
+  directions.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(event.venue.name + " " + event.venue.address);
   directions.hidden = false;
   byId("map-title").textContent = event.venue.name;
   byId("map-note").textContent = event.venue.address;
