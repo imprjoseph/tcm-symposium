@@ -2,7 +2,6 @@
 const ROSTER = '報名名冊';
 const HEADERS = ['報名時間', '姓名', '電子郵件', '服務單位', '報到代碼雜湊', '確認信狀態', '確認信寄出時間', '報到時間'];
 const NOTICE_HEADER = '個資告知版本';
-const LINE_ID_HEADER = 'LINE ID';
 const STATE_SENT = '已寄出';
 const STATE_PENDING = '待寄送';
 const STATE_FAILED = '待重試';
@@ -54,11 +53,9 @@ function withRoster_(properties, data) {
 function register_(sheet, properties, data) {
   const attendee = data.attendee;
   const event = data.event;
-  const lineId = typeof attendee?.lineId === 'string' ? attendee.lineId.trim() : '';
   if (!attendee || !event || !/^[a-z0-9][a-z0-9._+'%-]*@[a-z0-9-]+(?:\.[a-z0-9-]+)+$/i.test(attendee.email || '') ||
       typeof attendee.name !== 'string' || !attendee.name || attendee.name.length > 60 || attendee.email.length > 120 ||
       typeof attendee.organization !== 'string' || attendee.organization.length > 100 ||
-      lineId.length > 40 || /[\r\n\t]/.test(lineId) ||
       !/^TCM-[A-Z0-9]{32}$/.test(data.code || '') || typeof data.qr !== 'string' || data.qr.length > 18000 ||
       !/^[A-Za-z0-9+/=]+$/.test(data.qr) || digest_(data.code) !== data.ticketHash) return {status: 'invalid'};
 
@@ -78,11 +75,7 @@ function register_(sheet, properties, data) {
       new Date(), textCell_(attendee.name), textCell_(attendee.email), textCell_(attendee.organization), data.ticketHash,
       STATE_PENDING, '', ''
     ];
-    if (data.noticeVersion || lineId) record.push(textCell_(data.noticeVersion || ''));
-    if (lineId) {
-      if (sheet.getRange(1, 10).getValue() !== LINE_ID_HEADER) return {status: 'configuration'};
-      record.push(textCell_(lineId));
-    }
+    if (data.noticeVersion) record.push(textCell_(data.noticeVersion));
     if (row > sheet.getMaxRows()) sheet.insertRowsAfter(sheet.getMaxRows(), 200);
     sheet.getRange(row, 1, 1, record.length).setValues([record]);
     SpreadsheetApp.flush();

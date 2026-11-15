@@ -21,7 +21,9 @@ GitHub Pages 提供會議資訊、報名表及現場掃碼介面。正式送出�
 
 公開網站的測試報到由獨立的 Google Apps Script 處理（程式位於 `google/preview-check-in`）。該專案只驗證測試票券，沒有名冊和寄信權限。其 `Secret.gs` 由部署者在私有專案設定 `PREVIEW_SALT` 與 `PREVIEW_PASSWORD_DIGEST`（`SHA-256(鹽值 + ":" + 密碼)`）。部署網址設定於 `web/event.js` 的 `previewCheckInUrl`。私有 Worker 預覽使用 `PREVIEW_STAFF_CODE` 環境變數。正式報到各自使用下表的 `STAFF_CODE`。
 
-1. 由主辦單位指定的寄信 Google 帳號開啟私有報名名冊，選「擴充功能 → Apps Script」。分頁名稱應為「報名名冊」，A 至 J 欄依序為「報名時間、姓名、電子郵件、服務單位、報到代碼雜湊、確認信狀態、確認信寄出時間、報到時間、個資告知版本、LINE ID」。既有名冊在 J1 加上「LINE ID」，原有欄位順序保留。LINE ID 為選填，僅供會務聯繫。
+會議群邀請使用 `web/event.js` 的 `lineInviteUrl`。填入會議專用的 LINE 群邀請網址後，重新部署會議網站，報名區下方會顯示掃碼圖片和手機加入連結。
+
+1. 由主辦單位指定的寄信 Google 帳號開啟私有報名名冊，選「擴充功能 → Apps Script」。分頁名稱應為「報名名冊」，A 至 I 欄依序為「報名時間、姓名、電子郵件、服務單位、報到代碼雜湊、確認信狀態、確認信寄出時間、報到時間、個資告知版本」。
 2. 用 npm run build:pages 產生 dist/google。將該目錄中的 Code.gs、Pages.gs 和 QR.gs 分別放入同一 Apps Script 專案。專案與名冊時區設為 Asia/Taipei。
 3. 在 Apps Script 專案設定的「指令碼屬性」設定下列值。
 

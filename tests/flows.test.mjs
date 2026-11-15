@@ -17,7 +17,6 @@ test("private-review version accepts only demo data and supplies a real GIF QR t
   assert.equal((await status.json()).mode, "demo");
   assert.equal((await send("/api/register", { ...testAttendee, email: "someone@example.com" })).status, 400);
   assert.equal((await send("/api/register", { ...testAttendee, consent: false })).status, 400);
-  assert.equal((await send("/api/register", { ...testAttendee, lineId: "x".repeat(41) })).status, 400);
   assert.equal((await send("/api/register", testAttendee, "https://elsewhere.example")).status, 403);
   const demo = await send("/api/register", testAttendee);
   assert.equal(demo.status, 200);
@@ -69,7 +68,6 @@ test("Google registration and mail retry preserve one roster row and allow one c
   const sheet = {
     getLastRow: () => rows.length, getMaxRows: () => 1000,
     getRange: (row, col, height = 1, width = 1) => ({
-      getValue: () => rows[row - 1]?.[col - 1] ?? "",
       getValues: () => rows.slice(row - 1, row - 1 + height).map((entry) => entry.slice(col - 1, col - 1 + width)),
       setValues: (values) => values.forEach((value, index) => {
         const item = rows[row - 1 + index] ??= [];
@@ -148,17 +146,14 @@ test("Google registration and mail retry preserve one roster row and allow one c
   const newForm = { action: "register", name: "表單測試", email: "pages@example.invalid", consent: "yes", noticeVersion: "v1", lineId: "  =test-line  " };
   assert.equal(postForm({ ...newForm, noticeVersion: "old" }).title, "請重新閱讀個資告知");
   assert.equal(postForm({ ...newForm, consent: "" }).title, "請重新閱讀個資告知");
-  assert.equal(postForm({ ...newForm, lineId: "x".repeat(41) }).title, "資料格式有誤");
-  assert.equal(postForm(newForm).title, "暫時無法處理");
   assert.equal(rows.length, 2);
-  header[9] = "LINE ID";
   const accepted = postForm(newForm);
   assert.equal(accepted.title, "已處理報名請求");
   assert.equal(postForm(newForm).html, accepted.html);
   assert.equal(postForm({ ...newForm, email: "capacity@example.invalid" }).html, accepted.html);
   assert.doesNotMatch(accepted.html, /pages@example\.invalid|表單測試/);
   assert.equal(rows[2][8], "v1");
-  assert.equal(rows[2][9], "'=test-line");
+  assert.equal(rows[2][9], undefined);
   assert.doesNotMatch(accepted.html + sent[1].htmlBody, /test-line/);
   assert.equal(sent.length, 2);
   assert.equal(sent[1].attachments[0].bytes.subarray(0, 6).toString(), "GIF87a");

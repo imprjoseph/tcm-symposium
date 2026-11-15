@@ -6,8 +6,8 @@
   <meta name="description" content="第97屆國醫節暨第19屆台北國際中醫藥學術論壇，2027年3月13至14日於臺大醫院國際會議中心舉行。">
   <meta name="theme-color" content="#142d27">
   <title>第97屆國醫節暨第19屆台北國際中醫藥學術論壇</title>
-  <link rel="stylesheet" href="./style.css?v=four-speakers">
-  <script src="./app.js?v=four-speakers" type="module"></script>
+  <link rel="stylesheet" href="./style.css?v=line-group">
+  <script src="./app.js?v=line-group" type="module"></script>
 </head>
 <body>
   <a class="skip" href="#main">跳至主要內容</a>
@@ -73,8 +73,6 @@
             <label>姓名 <span class="required">*</span><input name="name" autocomplete="name" placeholder="請輸入姓名" required maxlength="60"></label>
             <label>電子郵件 <span class="required">*</span><input name="email" type="email" autocomplete="email" placeholder="name@example.com" required maxlength="120"></label>
             <label>服務單位 <span class="optional">選填</span><input name="organization" autocomplete="organization" placeholder="診所、醫院或機構名稱" maxlength="100"></label>
-            <label>LINE ID <span class="optional">選填</span><input name="lineId" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="請輸入 LINE ID" maxlength="40" aria-describedby="line-id-help"></label>
-            <p class="form-note" id="line-id-help">供主辦單位有需要時聯繫會務。可留空，填寫後請另依邀請加入 LINE 群組。</p>
             <div class="trap" aria-hidden="true"><label>請留空<input name="website" tabindex="-1" autocomplete="off"></label></div>
             <details class="privacy-notice" id="privacy">
               <summary id="privacy-heading">個人資料蒐集告知事項</summary>
@@ -98,8 +96,15 @@
         </div>
       </div>
     </section>
-    <section id="line-section" class="wrap line-bar" hidden>
-      <div><h3>LINE 會議通知</h3><p>已報名者可依確認信中的邀請資訊加入 LINE 群組。</p></div>
+    <section id="line-section" class="line-section" aria-labelledby="line-title">
+      <div class="wrap line-bar">
+        <div>
+          <h2 id="line-title">會議 LINE 群</h2>
+          <p id="line-note">群組邀請 QR Code 將於此處公布。</p>
+          <a id="line-join" class="button button-dark" hidden>開啟 LINE 加入群組 <span aria-hidden="true">↗</span></a>
+        </div>
+        <img id="line-qr" width="152" height="152" loading="lazy" alt="加入會議 LINE 群的 QR Code" hidden>
+      </div>
     </section>
     <section class="wrap section venue" id="venue">
       <div>

@@ -17,6 +17,7 @@ export const event = {
     embedUrl: "https://www.google.com/maps/embed?pb=%211m14%211m8%211m3%211d7229.566193786378%212d121.519522%213d25.041434%213m2%211i1024%212i768%214f13.1%213m3%211m2%211s0x3442a976b82a6343%3A0xebdefa61d17726a4%212z5b6Q5bee6LevMuiZn-W6reWckuacg-mkqA%215e0%213m2%211szh-TW%212sus%214v1725946650179%215m2%211szh-TW%212sus"
   },
   appsScriptUrl: "",
+  lineInviteUrl: "",
   previewCheckInUrl: "https://script.google.com/macros/s/AKfycbzvb8F_C6127nCjYxXI4VeCCInm5VlEp5Lb_5H2B6KLxePQScPD5t165SMW8WE0uizs/exec",
   registrationOpen: false,
   checkInOpen: false,
@@ -76,3 +77,4 @@ export const hasPrivacyNotice = Boolean(event.organizer && event.privacy?.versio
 const webAppUrl = (url) => /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(url || "") ? url : "";
 export const googleWebApp = webAppUrl(event.appsScriptUrl);
 export const previewCheckInApp = webAppUrl(event.previewCheckInUrl);
+export const lineInviteUrl = /^https:\/\/(?:line\.me\/(?:R\/)?ti\/g2?\/|lin\.ee\/)[^\s/][^\s]*$/.test(event.lineInviteUrl) ? event.lineInviteUrl : "";

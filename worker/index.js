@@ -12,7 +12,7 @@ import speakerTwo from "../assets/speaker-sample-2.jpg";
 import speakerThree from "../assets/speaker-sample-3.jpg";
 import speakerFour from "../assets/speaker-sample-4.jpg";
 import scanner from "../node_modules/html5-qrcode/html5-qrcode.min.js?raw";
-import { event, hasPrivacyNotice } from "../web/event.js";
+import { event, hasPrivacyNotice, lineInviteUrl } from "../web/event.js";
 
 const demoCode = "TCM-DEMO-000000000001";
 const codePattern = /^TCM-[A-Z0-9]{32}$/;
@@ -34,6 +34,10 @@ const assets = {
   "/speaker-sample-3.jpg": [speakerThree, "image/jpeg"],
   "/speaker-sample-4.jpg": [speakerFour, "image/jpeg"]
 };
+if (lineInviteUrl) {
+  const encoded = qrImage(lineInviteUrl).split(",")[1];
+  assets["/line-invite.gif"] = [Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0)), "image/gif"];
+}
 const securityHeaders = {
   "x-content-type-options": "nosniff",
   "referrer-policy": "no-referrer",
@@ -97,10 +101,8 @@ function readAttendee(data) {
   const name = clean(data.name);
   const email = clean(data.email).toLowerCase();
   const organization = clean(data.organization);
-  const lineId = clean(data.lineId);
   if (data.website || data.consent !== true || !name || name.length > 60 || email.length > 120 || !mailPattern.test(email) || organization.length > 100) return null;
-  if (lineId.length > 40 || /[\r\n\t]/.test(lineId)) return null;
-  return { name, email, organization, lineId };
+  return { name, email, organization };
 }
 
 function settings(env) {
@@ -110,8 +112,7 @@ function settings(env) {
   const live = finalized && configured;
   return {
     mode: !event.published ? "demo" : live && env.REGISTRATION_OPEN === "1" ? "live" : "closed",
-    checkMode: !event.published && env.PREVIEW_STAFF_CODE ? "demo" : live && env.CHECK_IN_OPEN === "1" ? "live" : "closed",
-    lineEnabled: Boolean(finalized && env.LINE_INVITE_URL?.startsWith("https://"))
+    checkMode: !event.published && env.PREVIEW_STAFF_CODE ? "demo" : live && env.CHECK_IN_OPEN === "1" ? "live" : "closed"
   };
 }
 

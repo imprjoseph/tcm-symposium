@@ -1,4 +1,4 @@
-import { event, googleWebApp, hasPrivacyNotice, sampleSpeakers } from "./event.js?v=four-speakers";
+import { event, googleWebApp, hasPrivacyNotice, lineInviteUrl, sampleSpeakers } from "./event.js?v=line-group";
 import { githubPages } from "./site-mode.js";
 
 const byId = (id) => document.getElementById(id);
@@ -146,15 +146,25 @@ for (const [index, announcement] of event.news.entries()) {
   byId("news-list").append(details);
 }
 
+if (lineInviteUrl) {
+  byId("line-note").textContent = "掃描 QR Code 或開啟 LINE 加入，接收會議通知與議程異動。";
+  const link = byId("line-join");
+  link.href = lineInviteUrl;
+  link.hidden = false;
+  const qr = byId("line-qr");
+  qr.src = "./line-invite.gif?v=" + encodeURIComponent(lineInviteUrl.split("/").pop());
+  qr.hidden = false;
+}
+
 const notice = event.privacy;
 const privacyItems = [
   ["蒐集單位", event.organizer || "主辦單位待公告"],
-  ["蒐集目的", "辦理本次研討會報名、確認信與會議通知、名額管理及現場報到。選填的 LINE ID 僅供必要的會務聯繫。"],
-  ["個人資料類別", "姓名、電子郵件、服務單位與 LINE ID（後兩項選填），以及系統產生的票券與報到紀錄。"],
+  ["蒐集目的", "辦理本次研討會報名、確認信與會議通知、名額管理及現場報到。"],
+  ["個人資料類別", "姓名、電子郵件、服務單位（選填），以及系統產生的票券與報到紀錄。"],
   ["利用期間及地區", [notice.retention || "保存期限待主辦單位確認", notice.region || "資料處理地區待主辦單位確認"].join("。") + "。"],
   ["利用對象及方式", "由主辦單位及受託執行報名的工作人員處理。透過 Google 試算表管理名冊、以電子郵件確認報名，並於會場驗證 QR Code。"],
   ["當事人權利與行使方式", "可聯絡 " + (notice.contact || "主辦單位聯絡窗口（待公告）") + "，依個資法請求查詢或閱覽、製給複製本、補充或更正、停止蒐集處理或利用，或刪除。"],
-  ["不提供資料的影響", "姓名或電子郵件未提供時，無法完成線上報名及收取確認信。服務單位及 LINE ID 留空均可完成報名。"]
+  ["不提供資料的影響", "姓名或電子郵件未提供時，無法完成線上報名及收取確認信。服務單位可自由選填。"]
 ];
 for (const [label, description] of privacyItems) byId("privacy-copy").append(make("dt", label), make("dd", description));
 byId("notice-version").value = notice.version;
@@ -201,7 +211,6 @@ fillDemo.onclick = () => {
   fields.name.value = "測試與會者";
   fields.email.value = "attendee@example.invalid";
   fields.organization.value = "研討會測試";
-  fields.lineId.value = "tcm-demo";
 };
 
 function setMode(data) {
@@ -213,12 +222,11 @@ function setMode(data) {
   }[mode];
   fillDemo.hidden = mode !== "demo";
   updateRegistrationControls();
-  byId("line-section").hidden = !data.lineEnabled;
 }
 if (githubPages) {
   const live = event.published && event.registrationOpen && hasPrivacyNotice && googleWebApp;
   if (live) form.action = googleWebApp;
-  setMode({ mode: live ? "live" : event.published ? "closed" : "demo", lineEnabled: false });
+  setMode({ mode: live ? "live" : event.published ? "closed" : "demo" });
 } else {
   fetch("./api/status").then((response) => {
     if (!response.ok) throw new Error("status");
@@ -239,7 +247,6 @@ form.onsubmit = async (e) => {
     setStatus("預覽只接受測試資料，請先點「填入測試資料」。", true);
     return;
   }
-  if (mode === "demo") delete data.lineId;
   submitting = true;
   updateRegistrationControls();
   setStatus(mode === "demo" ? "正在建立預覽票券…" : "正在處理報名與確認信…");

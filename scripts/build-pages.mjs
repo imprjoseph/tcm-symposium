@@ -1,6 +1,7 @@
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { build } from "esbuild";
 import qrcode from "qrcode-generator";
+import { event, lineInviteUrl } from "../web/event.js";
 
 const pages = "dist/pages";
 const google = "dist/google";
@@ -19,11 +20,20 @@ await Promise.all([
   writeFile(pages + "/.nojekyll", "")
 ]);
 
-const ticket = qrcode(0, "M");
-ticket.addData("TCM-DEMO-000000000001");
-ticket.make();
-const encoded = ticket.createDataURL(6, 24).split(",")[1];
-await writeFile(pages + "/preview-ticket.gif", Buffer.from(encoded, "base64"));
+async function writeQr(value, filename) {
+  const qr = qrcode(0, "M");
+  qr.addData(value);
+  qr.make();
+  const encoded = qr.createDataURL(6, 24).split(",")[1];
+  await writeFile(pages + "/" + filename, Buffer.from(encoded, "base64"));
+}
+await writeQr("TCM-DEMO-000000000001", "preview-ticket.gif");
+if (event.lineInviteUrl && !lineInviteUrl) throw new Error("LINE invite must be a line.me group or lin.ee invitation URL.");
+if (lineInviteUrl) {
+  await writeQr(lineInviteUrl, "line-invite.gif");
+} else {
+  await rm(pages + "/line-invite.gif", { force: true });
+}
 
 const encoder = await build({
   stdin: {
