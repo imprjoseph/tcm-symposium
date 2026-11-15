@@ -149,5 +149,6 @@ nav[data-open=true]{display:grid}nav a{padding:8px 0}
 .privacy-notice dd{margin:0}
 .privacy-notice p.form-note{margin:8px 0 0;font-size:12px;color:var(--muted)}
 .floating-register{position:fixed;z-index:6;right:max(18px,env(safe-area-inset-right));bottom:calc(18px + env(safe-area-inset-bottom));box-shadow:0 4px 18px #13282045;border:1px solid #926b32;min-height:48px}
+.registration-herb{width:23px;height:23px;flex:none}
 footer{padding-bottom:62px}
 @media(max-width:690px){.news-feature .section{padding-block:29px 31px}.floating-register{right:max(13px,env(safe-area-inset-right));bottom:calc(13px + env(safe-area-inset-bottom))}}
