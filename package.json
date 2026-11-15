@@ -1,0 +1,17 @@
+{
+  "name": "sites-worker-esm-starter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "validate": "node scripts/validate-artifact.mjs",
+    "build:pages": "node scripts/build-pages.mjs"
+  },
+  "dependencies": {
+    "html5-qrcode": "2.3.8",
+    "qrcode-generator": "2.0.4"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工作人員報到｜中醫醫學研討會</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./check-in.js" type="module"></script>
+</head>
+<body class="check-page">
+<header class="masthead"><div class="wrap mast-row"><a href="./" class="brand"><span class="seal" aria-hidden="true">醫</span><span>中醫醫學研討會</span></a><a class="text-button" href="./">回會議網站 ↗</a></div></header>
+<main class="wrap section">
+  <p class="eyebrow">工作人員專用</p><h1 class="check-title">現場掃碼報到</h1>
+  <p class="caption" id="check-mode">正在查詢報到狀態。</p>
+  <div class="check-grid">
+    <section class="form-card" aria-label="掃描 QR Code">
+      <h2>掃描 QR Code</h2>
+      <p class="form-note">請將確認信中的 QR Code 對準相機，也可讀取本機圖片。</p>
+      <div id="qr-reader"></div>
+      <div class="form-actions"><button id="start-scan" class="button button-dark" type="button">開啟相機</button><button id="stop-scan" class="text-button" type="button" hidden>停止掃描</button><label class="text-button file-label">讀取 QR 圖片<input type="file" accept="image/*" id="read-file"></label></div>
+    </section>
+    <section class="form-card">
+      <h2>確認報到</h2>
+      <form id="check-form" method="post">
+        <input type="hidden" name="action" value="check-in">
+        <div id="staff-control" hidden><label>工作人員通行碼<input name="staff" type="password" autocomplete="off" maxlength="128"></label></div>
+        <label>報到代碼<input id="check-code" name="code" required maxlength="80" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="掃碼後自動帶入，亦可手動輸入"></label>
+        <div class="form-actions"><button class="button button-dark" type="submit">確認報到</button><button id="last-demo" class="text-button" type="button" hidden>帶入預覽票券</button></div>
+        <p class="status" role="status" aria-live="polite" id="check-result"></p>
+      </form>
+    </section>
+  </div>
+</main>
+</body>
+</html>
