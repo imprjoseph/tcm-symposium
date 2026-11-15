@@ -78,11 +78,10 @@ function register_(sheet, properties, data) {
       new Date(), textCell_(attendee.name), textCell_(attendee.email), textCell_(attendee.organization), data.ticketHash,
       STATE_PENDING, '', ''
     ];
-    if (data.noticeVersion) record.push(textCell_(data.noticeVersion));
+    if (data.noticeVersion || lineId) record.push(textCell_(data.noticeVersion || ''));
     if (lineId) {
       if (sheet.getRange(1, 10).getValue() !== LINE_ID_HEADER) return {status: 'configuration'};
-      record[9] = textCell_(lineId);
-      record[8] ??= '';
+      record.push(textCell_(lineId));
     }
     if (row > sheet.getMaxRows()) sheet.insertRowsAfter(sheet.getMaxRows(), 200);
     sheet.getRange(row, 1, 1, record.length).setValues([record]);
