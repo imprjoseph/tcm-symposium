@@ -6,8 +6,8 @@
   <meta name="description" content="中醫醫學研討會。查詢會議議程、講師與交通資訊，完成線上報名及現場 QR Code 報到。">
   <meta name="theme-color" content="#142d27">
   <title>中醫醫學研討會</title>
-  <link rel="stylesheet" href="./style.css?v=privacy-scroll">
-  <script src="./app.js?v=privacy-scroll" type="module"></script>
+  <link rel="stylesheet" href="./style.css?v=transport">
+  <script src="./app.js?v=transport" type="module"></script>
 </head>
 <body>
   <a class="skip" href="#main">跳至主要內容</a>
@@ -100,7 +100,15 @@
       <div><h3>LINE 會議通知</h3><p>已報名者可依確認信中的邀請資訊加入 LINE 群組。</p></div>
     </section>
     <section class="wrap section venue" id="venue">
-      <div><p class="eyebrow">交通資訊</p><h2>如何抵達</h2><p id="venue-address" class="body-copy">正式會場與交通資訊待公告。</p><p id="venue-transit" class="body-copy" hidden></p><a id="directions" class="button button-light" href="#venue" target="_blank" rel="noopener noreferrer" hidden>開啟 Google 地圖 <span aria-hidden="true">↗</span></a></div>
+      <div>
+        <p class="eyebrow">交通資訊</p><h2>如何抵達</h2>
+        <p id="venue-address" class="body-copy">正式會場與交通資訊待公告。</p>
+        <ul id="venue-transit" class="venue-transit" hidden></ul>
+        <div class="actions">
+          <a id="directions" class="button button-light" href="#venue" target="_blank" rel="noopener noreferrer" hidden>開啟 Google 地圖 <span aria-hidden="true">↗</span></a>
+          <a id="venue-transit-source" class="text-button" href="#venue" target="_blank" rel="noopener noreferrer" hidden>會議中心交通資訊 <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
       <div class="map-card" id="map-card"><div id="map-placeholder"><span class="map-pin" aria-hidden="true">◎</span><strong id="map-title">會場待公告</strong><p id="map-note">地址確認後，即可在此查詢地圖與路線。</p><button id="load-map" class="button button-light" type="button" hidden>載入地圖</button></div></div>
     </section>
   </main>

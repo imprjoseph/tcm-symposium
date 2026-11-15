@@ -1,4 +1,4 @@
-import { event, googleWebApp, hasPrivacyNotice } from "./event.js?v=venue";
+import { event, googleWebApp, hasPrivacyNotice } from "./event.js?v=transport";
 import { githubPages } from "./site-mode.js";
 
 const byId = (id) => document.getElementById(id);
@@ -45,11 +45,20 @@ if (event.venue.name && event.venue.address) {
   byId("venue-short").textContent = event.venue.name;
   byId("venue-address").textContent = event.venue.address;
   const transit = byId("venue-transit");
-  transit.textContent = event.venue.transit;
-  transit.hidden = !event.venue.transit;
+  for (const { label, detail } of event.venue.transit ?? []) {
+    const item = make("li");
+    item.append(make("strong", label), document.createTextNode("　" + detail));
+    transit.append(item);
+  }
+  transit.hidden = !transit.childElementCount;
   const directions = byId("directions");
   directions.href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(event.venue.name + " " + event.venue.address);
   directions.hidden = false;
+  if (event.venue.transitUrl) {
+    const transitLink = byId("venue-transit-source");
+    transitLink.href = event.venue.transitUrl;
+    transitLink.hidden = false;
+  }
   byId("map-title").textContent = event.venue.name;
   byId("map-note").textContent = event.venue.address;
   if (event.venue.embedUrl) {
