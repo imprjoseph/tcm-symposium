@@ -1,4 +1,4 @@
-import { event, googleWebApp, hasPrivacyNotice } from "./event.js";
+import { event, googleWebApp, hasPrivacyNotice, previewCheckInApp } from "./event.js?v=staff-password";
 import { githubPages } from "./site-mode.js";
 
 const byId = (id) => document.getElementById(id);
@@ -59,10 +59,8 @@ function applyCode(raw) {
 submit.disabled = start.disabled = file.disabled = true;
 function setMode(nextMode) {
   mode = nextMode;
-  byId("check-mode").textContent = mode === "demo" ? "預覽模式。只接受測試票券。" : mode === "live" ? "請以工作人員通行碼核驗與會者票券。" : "正式報到尚未開放。";
-  const staff = byId("staff-control");
-  staff.hidden = mode !== "live";
-  staff.querySelector("input").required = mode === "live";
+  byId("check-mode").textContent = mode === "demo" ? "預覽模式。請輸入工作人員密碼及測試票券。" : mode === "live" ? "請輸入工作人員密碼以核驗與會者票券。" : "報到目前尚未開放。";
+  form.elements.staff.disabled = mode === "closed";
   const last = byId("last-demo");
   let saved;
   try { saved = localStorage.getItem("tcm-demo-ticket"); } catch {}
@@ -72,8 +70,10 @@ function setMode(nextMode) {
 }
 if (githubPages) {
   const live = event.published && event.checkInOpen && hasPrivacyNotice && googleWebApp;
+  const demo = !event.published && previewCheckInApp;
   if (live) form.action = googleWebApp;
-  setMode(live ? "live" : event.published ? "closed" : "demo");
+  if (demo) form.action = previewCheckInApp;
+  setMode(live ? "live" : demo ? "demo" : "closed");
 } else {
   fetch("./api/status").then((response) => {
     if (!response.ok) throw new Error("status");
@@ -111,37 +111,20 @@ file.onchange = async () => {
 };
 
 form.onsubmit = async (e) => {
-  if (githubPages && mode === "live" && !submit.disabled) return;
+  if (githubPages && mode !== "closed" && !submit.disabled) return;
   e.preventDefault();
   if (submit.disabled) return;
   const code = input.value.trim();
-  let state;
-  if (mode === "demo") {
-    try { state = JSON.parse(localStorage.getItem("tcm-demo-checkins") || "{}"); } catch {}
-    if (state?.[code]) {
-      show("此預覽票券已報到。");
-      return;
-    }
-  }
   submit.disabled = true;
   show("正在核驗票券…");
   try {
-    let data;
-    if (githubPages) {
-      if (code !== "TCM-DEMO-000000000001") throw new Error("找不到此預覽票券。");
-      data = { message: "測試與會者已完成預覽報到。" };
-    } else {
-      const response = await fetch("./api/check-in", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, staff: form.elements.staff.value })
-      });
-      data = await response.json();
-      if (!response.ok) throw new Error(data.message || "暫時無法報到。");
-    }
-    if (mode === "demo") {
-      try { localStorage.setItem("tcm-demo-checkins", JSON.stringify({ ...state, [code]: true })); } catch {}
-    }
+    const response = await fetch("./api/check-in", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, staff: form.elements.staff.value })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "暫時無法報到。");
     show(data.message);
     input.select();
   } catch (error) { show(error.message, true); }

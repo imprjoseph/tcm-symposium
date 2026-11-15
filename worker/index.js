@@ -108,7 +108,7 @@ function settings(env) {
   const live = finalized && configured;
   return {
     mode: !event.published ? "demo" : live && env.REGISTRATION_OPEN === "1" ? "live" : "closed",
-    checkMode: !event.published ? "demo" : live && env.CHECK_IN_OPEN === "1" ? "live" : "closed",
+    checkMode: !event.published && env.PREVIEW_STAFF_CODE ? "demo" : live && env.CHECK_IN_OPEN === "1" ? "live" : "closed",
     lineEnabled: Boolean(finalized && env.LINE_INVITE_URL?.startsWith("https://"))
   };
 }
@@ -156,12 +156,13 @@ async function register(env, data, mode, origin) {
 async function checkIn(env, data, mode) {
   if (mode === "closed") return fail("正式報到尚未開放。", 403);
   const code = typeof data.code === "string" ? data.code.trim() : "";
+  const staff = typeof data.staff === "string" ? data.staff : "";
+  const expected = mode === "demo" ? env.PREVIEW_STAFF_CODE : env.STAFF_CODE;
+  if (!staff || staff.length > 128 || await hashText(staff) !== await hashText(expected)) {
+    return fail("工作人員密碼有誤。", 403);
+  }
   if (mode === "demo") {
     return code === demoCode ? api({ message: "測試與會者已完成預覽報到。" }) : fail("找不到此預覽票券。", 404);
-  }
-  const staff = typeof data.staff === "string" ? data.staff : "";
-  if (staff.length > 128 || await hashText(staff) !== await hashText(env.STAFF_CODE)) {
-    return fail("工作人員通行碼有誤。", 403);
   }
   if (!codePattern.test(code)) return fail("報到代碼格式不正確。");
   const result = await callGoogle(env, { action: "check-in", ticketHash: await hashText(code) });

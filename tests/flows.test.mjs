@@ -7,9 +7,9 @@ import worker from "../dist/server/index.js";
 
 const site = "https://event.example";
 const testAttendee = { name: "測試與會者", email: "attendee@example.invalid", organization: "", consent: true };
-const send = (path, data, origin = site) => worker.fetch(new Request(site + path, {
+const send = (path, data, origin = site, env) => worker.fetch(new Request(site + path, {
   method: "POST", headers: { "content-type": "application/json", origin }, body: JSON.stringify(data)
-}));
+}), env);
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 
 test("private-review version accepts only demo data and supplies a real GIF QR ticket", async () => {
@@ -23,12 +23,42 @@ test("private-review version accepts only demo data and supplies a real GIF QR t
   assert.equal(demo.status, 200);
   const { code, qr } = await demo.json();
   assert.equal(Buffer.from(qr.split(",")[1], "base64").subarray(0, 6).toString(), "GIF87a");
-  assert.equal((await send("/api/check-in", { code })).status, 200);
-  assert.equal((await send("/api/check-in", { code: "invalid" })).status, 404);
+  const env = { PREVIEW_STAFF_CODE: "test-preview-password" };
+  assert.equal((await send("/api/check-in", { code })).status, 403);
+  assert.equal((await send("/api/check-in", { code }, site, env)).status, 403);
+  assert.equal((await send("/api/check-in", { code, staff: "wrong" }, site, env)).status, 403);
+  assert.equal((await send("/api/check-in", { code, staff: env.PREVIEW_STAFF_CODE }, site, env)).status, 200);
+  assert.equal((await send("/api/check-in", { code: "invalid", staff: env.PREVIEW_STAFF_CODE }, site, env)).status, 404);
   assert.equal((await worker.fetch(new Request(site + "/hero.jpg"))).headers.get("content-type"), "image/jpeg");
   for (const index of [1, 2, 3]) {
     assert.equal((await worker.fetch(new Request(site + "/speaker-sample-" + index + ".jpg"))).headers.get("content-type"), "image/jpeg");
   }
+});
+
+test("public preview requires the password and only validates the test ticket", async () => {
+  const context = vm.createContext({
+    PREVIEW_SALT: "test-salt",
+    PREVIEW_PASSWORD_DIGEST: digest("test-salt:test-preview-password"),
+    Utilities: {
+      computeDigest: (_, value) => [...Buffer.from(digest(value), "hex")],
+      DigestAlgorithm: { SHA_256: "SHA-256" }, Charset: { UTF_8: "UTF-8" },
+    },
+    HtmlService: {
+      createHtmlOutput: (html) => ({
+        html, setTitle(title) { this.title = title; return this; }, addMetaTag() { return this; }
+      }),
+    },
+  });
+  vm.runInContext(await readFile(new URL("../google/preview-check-in/Code.gs", import.meta.url), "utf8"), context);
+  const submit = (form) => context.doPost({ postData: { length: 120 }, parameter: { action: "check-in", ...form } });
+  const code = "TCM-DEMO-000000000001";
+  const staff = "test-preview-password";
+  assert.equal(submit({ code }).title, "工作人員密碼有誤");
+  assert.equal(submit({ code, staff: "wrong" }).title, "工作人員密碼有誤");
+  assert.equal(submit({ code: "TCM-" + "A".repeat(32), staff }).title, "找不到此預覽票券");
+  const result = submit({ code, staff });
+  assert.equal(result.title, "預覽報到完成");
+  assert.ok(!result.html.includes(staff));
 });
 
 test("Google registration and mail retry preserve one roster row and allow one check-in", async () => {

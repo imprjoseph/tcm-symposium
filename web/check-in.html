@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>工作人員報到｜第19屆台北國際中醫藥學術論壇</title>
   <link rel="stylesheet" href="./style.css">
-  <script src="./check-in.js" type="module"></script>
+  <script src="./check-in.js?v=staff-password" type="module"></script>
 </head>
 <body class="check-page">
 <header class="masthead"><div class="wrap mast-row"><a href="./" class="brand"><span class="seal" aria-hidden="true">醫</span><span>2027 國醫節</span></a><a class="text-button" href="./">回會議網站 ↗</a></div></header>
@@ -23,9 +23,9 @@
       <h2>確認報到</h2>
       <form id="check-form" method="post">
         <input type="hidden" name="action" value="check-in">
-        <div id="staff-control" hidden><label>工作人員通行碼<input name="staff" type="password" autocomplete="off" maxlength="128"></label></div>
+        <div id="staff-control"><label>工作人員密碼<input name="staff" type="password" autocomplete="off" maxlength="128" required disabled></label></div>
         <label>報到代碼<input id="check-code" name="code" required maxlength="80" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="掃碼後自動帶入，亦可手動輸入"></label>
-        <div class="form-actions"><button class="button button-dark" type="submit">確認報到</button><button id="last-demo" class="text-button" type="button" hidden>帶入預覽票券</button></div>
+        <div class="form-actions"><button class="button button-dark" type="submit" disabled>確認報到</button><button id="last-demo" class="text-button" type="button" hidden>帶入預覽票券</button></div>
         <p class="status" role="status" aria-live="polite" id="check-result"></p>
       </form>
     </section>
