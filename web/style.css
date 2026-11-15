@@ -37,8 +37,7 @@ nav a:hover,.text-button:hover{color:#906324}
 .eyebrow{font-weight:700;font-size:13px;letter-spacing:.14em;color:#786331;margin:0 0 12px}
 .hero-eyebrow{display:inline-block;color:#eac68c;border-bottom:1px solid #b08f5a;padding-bottom:10px;letter-spacing:.18em}
 h1,h2,h3{font-family:var(--serif);line-height:1.2;margin:0}
-.hero h1{font-size:clamp(60px,7.1vw,111px);line-height:1.05;letter-spacing:.035em;margin:14px 0 21px}
-.hero-dot{color:var(--gold);font-size:.57em}
+.hero h1{font-size:clamp(42px,5.7vw,84px);line-height:1.12;letter-spacing:.02em;margin:14px 0 21px}
 .hero p{color:#f0ecdf;margin:0 0 29px;line-height:1.85;font-size:16px;letter-spacing:.04em}
 .actions,.form-actions{display:flex;flex-wrap:wrap;gap:12px 15px;align-items:center}
 .facts{background:#f1ebdc;border-bottom:1px solid #e2dbc9}
@@ -133,7 +132,7 @@ html{scroll-padding-top:65px}.wrap{width:calc(100% - 34px)}.mast-row{min-height:
 nav{display:none;position:absolute;top:60px;left:0;right:0;background:var(--ivory);padding:12px 18px 20px;box-shadow:0 12px 20px #13282020;grid-template-columns:1fr 1fr;gap:0}
 nav[data-open=true]{display:grid}nav a{padding:8px 0}
 .hero{min-height:485px;background-image:linear-gradient(90deg,#10261ffa,#10261fa3 50%,#10261f28),url('./hero.jpg');background-position:center,63% center}
-.hero-body{padding-block:58px 60px}.hero h1{font-size:clamp(52px,13vw,78px);margin-top:13px}.hero p{font-size:14px;max-width:300px}.desktop{display:none}
+.hero-body{padding-block:58px 60px}.hero h1{font-size:clamp(34px,10.5vw,57px);margin-top:13px}.hero p{font-size:14px;max-width:300px}.desktop{display:none}
 .fact-grid{grid-template-columns:1fr;min-height:0;padding:10px 0}.fact-grid>div,.fact-grid>div:first-child{padding:10px 0;border:0}.fact-grid>div+div{border-top:1px solid #dcd4c0}.fact-icon{width:33px;height:33px;font-size:15px}
 .section{padding-block:53px}.section h2{font-size:36px}.about,.news-layout,.venue,.register-grid,.check-grid{grid-template-columns:1fr;gap:23px}
 .section-head{display:block}.section-head .caption{margin-top:8px}

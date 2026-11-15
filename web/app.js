@@ -1,4 +1,4 @@
-import { event, googleWebApp, hasPrivacyNotice } from "./event.js?v=transport";
+import { event, googleWebApp, hasPrivacyNotice } from "./event.js?v=forum-2027";
 import { githubPages } from "./site-mode.js";
 
 const byId = (id) => document.getElementById(id);
@@ -33,10 +33,8 @@ nav.addEventListener("click", (e) => {
   }
 });
 
+if (event.date) byId("event-date").textContent = event.date;
 if (event.published) {
-  byId("event-date").textContent = event.date;
-  byId("speaker-note").hidden = true;
-  byId("agenda-note").hidden = true;
   byId("footer-caption").textContent = event.organizer;
   byId("privacy-draft").hidden = hasPrivacyNotice;
 }
@@ -74,6 +72,9 @@ if (event.venue.name && event.venue.address) {
   }
 }
 
+const speakerList = byId("speaker-list");
+speakerList.hidden = !event.speakers.length;
+byId("speaker-note").hidden = event.speakers.length > 0;
 for (const speaker of event.speakers) {
   const card = make("article", "", "speaker");
   const portrait = make("div", speaker.photo ? "" : speaker.mark, "portrait");
@@ -87,17 +88,19 @@ for (const speaker of event.speakers) {
   const body = make("div", "", "speaker-text");
   body.append(make("h3", speaker.name), make("p", speaker.bio));
   card.append(portrait, body);
-  byId("speaker-list").append(card);
+  speakerList.append(card);
 }
 
 function showAgenda(filter) {
   const list = byId("agenda-list");
   list.replaceChildren();
-  for (const session of event.agenda.filter((entry) => filter === "all" || entry.period === filter)) {
+  for (const session of event.agenda.filter((entry) => filter === "all" || entry.day === filter)) {
     const article = make("article", "", "session");
     const body = make("div");
     body.append(make("h3", session.title), make("p", session.detail));
-    article.append(make("time", session.time), body, make("span", session.type, "tag"));
+    const time = make("time", session.time);
+    if (session.date) time.dateTime = session.date;
+    article.append(time, body, make("span", session.type, "tag"));
     list.append(article);
   }
   if (!list.childElementCount) list.append(make("p", "此時段暫無議程。", "caption"));
